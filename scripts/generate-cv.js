@@ -1,0 +1,418 @@
+// scripts/generate-cv.js
+// Run with: node scripts/generate-cv.js
+// Generates public/arunava_kundu_resume.pdf  (strict one-page A4)
+
+import puppeteer from "puppeteer";
+import { writeFileSync } from "fs";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// ─── CV HTML template ─────────────────────────────────────────────────────────
+
+const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Arunava Kundu — Resume</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --v: #7c3aed;
+    --c: #0891b2;
+    --dark: #111827;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --tag-bg: #f5f3ff;
+    --tag-c-bg: #ecfeff;
+  }
+
+  html, body {
+    font-family: 'Inter', sans-serif;
+    font-size: 8.1pt;
+    color: var(--text);
+    background: #fff;
+    line-height: 1.38;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── Strict A4 page ── */
+  .page {
+    width: 210mm;
+    height: 297mm;
+    overflow: hidden;
+    padding: 8mm 10mm 6mm 10mm;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Header ── */
+  .hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 6px;
+    border-bottom: 2.5px solid var(--v);
+    margin-bottom: 8px;
+    flex-shrink: 0;
+  }
+  .hdr h1 {
+    font-size: 21pt;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    color: var(--dark);
+    line-height: 1;
+  }
+  .hdr .role {
+    font-size: 8pt;
+    font-weight: 700;
+    color: var(--v);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+  .hdr .contacts {
+    text-align: right;
+    font-size: 7.2pt;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  .hdr .contacts a { color: var(--c); text-decoration: none; }
+
+  /* ── Body: left 62% / right 38% ── */
+  .body {
+    display: grid;
+    grid-template-columns: 62% 38%;
+    gap: 0 16px;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ── Section label ── */
+  .sec {
+    margin-bottom: 8px;
+  }
+  .sec-title {
+    font-size: 6.8pt;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--v);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2.5px;
+    margin-bottom: 6px;
+  }
+
+  /* ── Experience ── */
+  .exp { margin-bottom: 8px; }
+  .exp-hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .exp-role { font-weight: 700; font-size: 8.5pt; color: var(--dark); }
+  .exp-date { font-size: 6.8pt; color: var(--muted); font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
+  .exp-co   { font-size: 7.8pt; font-weight: 600; color: var(--c); margin-bottom: 3px; }
+  .bullets  { padding-left: 11px; }
+  .bullets li { margin-bottom: 1.5px; list-style: disc; }
+  .bullets li::marker { color: var(--v); }
+
+  /* ── Projects: 3-col grid ── */
+  .proj-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+  }
+  .proj {
+    border: 1px solid var(--border);
+    border-left: 2.5px solid var(--v);
+    border-radius: 4px;
+    padding: 5px 7px;
+    background: #fafafa;
+  }
+  .proj.cyan-accent { border-left-color: var(--c); }
+  .proj-name { font-weight: 700; font-size: 7.8pt; color: var(--dark); margin-bottom: 1.5px; }
+  .proj-desc { font-size: 7pt; color: var(--muted); line-height: 1.35; margin-bottom: 4px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 2px; }
+  .tag {
+    font-size: 6pt;
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--tag-bg);
+    color: var(--v);
+    padding: 1px 4px;
+    border-radius: 2px;
+  }
+  .tag.c { background: var(--tag-c-bg); color: var(--c); }
+
+  /* ── Skills ── */
+  .skill-row { margin-bottom: 5px; }
+  .skill-lbl {
+    font-size: 6.8pt;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 3px;
+  }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 2.5px; }
+
+  /* ── Education ── */
+  .edu { margin-bottom: 6px; }
+  .edu-deg { font-weight: 700; font-size: 8pt; color: var(--dark); }
+  .edu-sch { font-size: 7.5pt; font-weight: 600; color: var(--c); }
+  .edu-yr  { font-size: 6.8pt; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+  /* ── Certs ── */
+  .cert { display: flex; gap: 5px; align-items: flex-start; margin-bottom: 4px; }
+  .cert-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--v); margin-top: 3.5px; flex-shrink: 0; }
+  .cert-dot.c { background: var(--c); }
+  .cert-name { font-weight: 600; font-size: 7.8pt; color: var(--dark); }
+  .cert-sub  { font-size: 6.8pt; color: var(--muted); }
+
+  /* ── Profile ── */
+  .profile { font-size: 7.5pt; color: #374151; line-height: 1.5; }
+
+  @page { size: A4; margin: 0; }
+  @media print { .page { overflow: hidden; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div>
+      <h1>Arunava Kundu</h1>
+      <div class="role">Full Stack Developer &nbsp;·&nbsp; Cybersecurity Enthusiast</div>
+    </div>
+    <div class="contacts">
+      <div><a href="mailto:drarunkundu22@gmail.com">drarunkundu22@gmail.com</a></div>
+      <div><a href="https://github.com/Arunava-27">github.com/Arunava-27</a></div>
+      <div><a href="https://linkedin.com/in/arunava-kundu-32375024b">linkedin.com/in/arunava-kundu-32375024b</a></div>
+      <div>Kolkata, West Bengal, India</div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- ── LEFT COLUMN ── -->
+    <div>
+
+      <!-- Experience -->
+      <div class="sec">
+        <div class="sec-title">Experience</div>
+
+        <div class="exp">
+          <div class="exp-hdr">
+            <span class="exp-role">Software Developer (Fixed-Term)</span>
+            <span class="exp-date">Sep 2025 – Present</span>
+          </div>
+          <div class="exp-co">IEMALabs — IEMA Research &amp; Development Pvt. Ltd., Kolkata</div>
+          <ul class="bullets">
+            <li>Built production MERN + React Native apps across healthcare, IoT &amp; education verticals</li>
+            <li>Developed IEMA EMR — full-stack Electronic Medical Records with RBAC, appointments &amp; prescriptions</li>
+            <li>Containerised services with Docker; configured CI/CD pipelines on AWS EC2 for automated deploys</li>
+          </ul>
+        </div>
+
+        <div class="exp">
+          <div class="exp-hdr">
+            <span class="exp-role">Trainee Developer</span>
+            <span class="exp-date">Jan 2023 – Sep 2025</span>
+          </div>
+          <div class="exp-co">IEMALabs — IEMA Research &amp; Development Pvt. Ltd., Kolkata</div>
+          <ul class="bullets">
+            <li>Contributed features across React.js / Node.js products; integrated payment, SMS &amp; map APIs</li>
+            <li>Conducted internal VA/PT exercises; patched critical SQL-injection &amp; XSS vulnerabilities</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Projects -->
+      <div class="sec">
+        <div class="sec-title">Projects</div>
+        <div class="proj-grid">
+
+          <div class="proj">
+            <div class="proj-name">VAPT Toolkit</div>
+            <div class="proj-desc">Automated VA/PT suite — recon, port scan, CVE lookup &amp; HTML reports.</div>
+            <div class="tags"><span class="tag">Python</span><span class="tag">Nmap</span><span class="tag c">Security</span></div>
+          </div>
+
+          <div class="proj">
+            <div class="proj-name">IEMA EMR</div>
+            <div class="proj-desc">MERN medical records with RBAC, patient mgmt &amp; prescription flow.</div>
+            <div class="tags"><span class="tag">React</span><span class="tag">Node.js</span><span class="tag c">Healthcare</span></div>
+          </div>
+
+          <div class="proj">
+            <div class="proj-name">CyberShield</div>
+            <div class="proj-desc">Real-time threat dashboard with NVD CVE tracker &amp; live Socket.io alerts.</div>
+            <div class="tags"><span class="tag">React</span><span class="tag">Socket.io</span><span class="tag c">Security</span></div>
+          </div>
+
+          <div class="proj">
+            <div class="proj-name">IoT Asset Monitor</div>
+            <div class="proj-desc">Industrial MQTT telemetry dashboard with real-time charts &amp; threshold alerts.</div>
+            <div class="tags"><span class="tag">MQTT</span><span class="tag">Socket.io</span><span class="tag c">IoT</span></div>
+          </div>
+
+          <div class="proj">
+            <div class="proj-name">SecureVault</div>
+            <div class="proj-desc">Zero-knowledge AES-256 password manager with HIBP breach detection.</div>
+            <div class="tags"><span class="tag">React</span><span class="tag">AES-256</span><span class="tag c">Security</span></div>
+          </div>
+
+          <div class="proj cyan-accent">
+            <div class="proj-name">IntelliChat</div>
+            <div class="proj-desc">MERN chat with Gemini 1.5 AI assistant, room-based &amp; real-time WebSocket.</div>
+            <div class="tags"><span class="tag">React</span><span class="tag">Gemini AI</span><span class="tag c">AI</span></div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /left -->
+
+    <!-- ── RIGHT COLUMN ── -->
+    <div>
+
+      <!-- Profile -->
+      <div class="sec">
+        <div class="sec-title">Profile</div>
+        <p class="profile">Full Stack Developer with 2+ years at IEMALabs building production apps across healthcare, IoT &amp; education. Equally passionate about cybersecurity — VAPT, offensive tooling &amp; network analysis. Seeking roles at the intersection of engineering &amp; security.</p>
+      </div>
+
+      <!-- Skills -->
+      <div class="sec">
+        <div class="sec-title">Skills</div>
+
+        <div class="skill-row">
+          <div class="skill-lbl">Languages</div>
+          <div class="skill-tags">
+            <span class="tag">JS</span><span class="tag">TypeScript</span><span class="tag">Python</span>
+            <span class="tag">Java</span><span class="tag">Kotlin</span><span class="tag">C/C++</span>
+            <span class="tag">SQL</span><span class="tag">Bash</span>
+          </div>
+        </div>
+
+        <div class="skill-row">
+          <div class="skill-lbl">Web &amp; Mobile</div>
+          <div class="skill-tags">
+            <span class="tag">React.js</span><span class="tag">Next.js</span><span class="tag">Node.js</span>
+            <span class="tag">Express</span><span class="tag">React Native</span><span class="tag">MongoDB</span>
+            <span class="tag">PostgreSQL</span><span class="tag">Socket.io</span><span class="tag">Docker</span>
+            <span class="tag">GraphQL</span><span class="tag">Tailwind</span>
+          </div>
+        </div>
+
+        <div class="skill-row">
+          <div class="skill-lbl">Security &amp; DevOps</div>
+          <div class="skill-tags">
+            <span class="tag c">Pen Testing</span><span class="tag c">VAPT</span>
+            <span class="tag c">Kali Linux</span><span class="tag c">Wireshark</span>
+            <span class="tag">AWS</span><span class="tag">CI/CD</span><span class="tag">Nginx</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Education -->
+      <div class="sec">
+        <div class="sec-title">Education</div>
+
+        <div class="edu">
+          <div class="edu-deg">B.Tech — CS &amp; Business Systems</div>
+          <div class="edu-sch">Institute of Engineering &amp; Management, Kolkata</div>
+          <div class="edu-yr">2021 – 2025</div>
+        </div>
+
+        <div class="edu">
+          <div class="edu-deg">Diploma — CS &amp; Technology</div>
+          <div class="edu-sch">Saroj Mohan Institute of Technology, Hooghly</div>
+          <div class="edu-yr">2018 – 2021</div>
+        </div>
+      </div>
+
+      <!-- Certifications -->
+      <div class="sec">
+        <div class="sec-title">Certifications</div>
+
+        <div class="cert">
+          <div class="cert-dot"></div>
+          <div>
+            <div class="cert-name">AWS Fundamentals Specialisation</div>
+            <div class="cert-sub">Coursera / Amazon Web Services</div>
+          </div>
+        </div>
+
+        <div class="cert">
+          <div class="cert-dot c"></div>
+          <div>
+            <div class="cert-name">TryHackMe — Active Practitioner</div>
+            <div class="cert-sub">Web Fundamentals · Jr Pentester · SOC Analyst</div>
+          </div>
+        </div>
+
+        <div class="cert">
+          <div class="cert-dot"></div>
+          <div>
+            <div class="cert-name">Robotrix 2024 — Lead Developer</div>
+            <div class="cert-sub">IEM Annual Robotics Competition Platform</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GitHub strip -->
+      <div class="sec">
+        <div class="sec-title">Open Source</div>
+        <p style="font-size:7pt; color:var(--muted); font-family:'JetBrains Mono',monospace; line-height:1.6;">
+          100+ public repos &nbsp;·&nbsp; github.com/Arunava-27<br/>
+          <span style="color:var(--text);">vapt-toolkit · cybershield · iema-emr</span><br/>
+          <span style="color:var(--text);">iot-asset-monitor · securevault · intellichat</span>
+        </p>
+      </div>
+
+    </div><!-- /right -->
+
+  </div><!-- /body -->
+
+</div>
+</body>
+</html>`;
+
+// ─── Generate PDF ──────────────────────────────────────────────────────────────
+
+const outPdf  = resolve(__dirname, "../public/arunava_kundu_resume.pdf");
+const outHtml = resolve(__dirname, "../public/cv.html");
+
+writeFileSync(outHtml, html, "utf-8");
+console.log(`✔  HTML saved → ${outHtml}`);
+
+const browser = await puppeteer.launch({
+  headless: true,
+  args: ["--no-sandbox", "--disable-setuid-sandbox"],
+});
+
+try {
+  const page = await browser.newPage();
+  await page.setContent(html, { waitUntil: "networkidle0" });
+  await page.evaluate(() => document.fonts.ready);
+
+  await page.pdf({
+    path: outPdf,
+    format: "A4",
+    printBackground: true,
+    margin: { top: 0, right: 0, bottom: 0, left: 0 },
+  });
+
+  console.log(`✔  PDF saved  → ${outPdf}`);
+} finally {
+  await browser.close();
+}
