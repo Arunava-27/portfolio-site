@@ -23,7 +23,7 @@ export default function Layout() {
 
   return (
     <SmoothScroll>
-      <div className="dark">
+      <div className="relative dark">
         <ErrorBoundary>
           <PageReveal />
         </ErrorBoundary>

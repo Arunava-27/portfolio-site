@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useMemo, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { gsap } from "gsap";
 import * as THREE from "three";
+import { setLoaderDone } from "../../store/loaderStore";
 
 // ─── 3D: Central orb — wireframe icosahedron + orbiting rings ────────────────
 
@@ -252,7 +253,15 @@ export default function PageReveal() {
       yPercent: -100,
       duration: 0.9,
       ease: "power4.inOut",
-      onComplete: () => setDone(true),
+      onComplete: () => {
+        setDone(true);
+        // Wait for React to commit the unmount of PageReveal's WebGL canvas
+        // before Hero creates its own — prevents "Context Lost" from two
+        // simultaneous WebGL contexts. Two rAF cycles is enough for React 18.
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => setLoaderDone())
+        );
+      },
     }, 2.2);
 
     return () => tl.kill();

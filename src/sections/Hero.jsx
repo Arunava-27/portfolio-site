@@ -3,6 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Stars } from "@react-three/drei";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import * as THREE from "three";
+import { onLoaderDone } from "../store/loaderStore";
 
 // ─── 3D: Wireframe Icosahedron + orbiting rings ────────────────────────────
 
@@ -361,12 +362,19 @@ const fadeUp = {
 
 export default function Hero() {
   const mouseRef = useRef({ x: 0, y: 0 });
+  const [canvasReady, setCanvasReady] = useState(false);
 
   // Smooth spring parallax for the text layer
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
   const springX = useSpring(rawX, { stiffness: 38, damping: 22 });
   const springY = useSpring(rawY, { stiffness: 38, damping: 22 });
+
+  useEffect(() => {
+    // Delay mounting the WebGL canvas until PageReveal's canvas unmounts,
+    // preventing simultaneous contexts that trigger "Context Lost".
+    onLoaderDone(() => setCanvasReady(true));
+  }, []);
 
   useEffect(() => {
     const onMove = (e) => {
@@ -388,15 +396,17 @@ export default function Hero() {
     >
       {/* ── R3F Canvas (full background) ── */}
       <div className="absolute inset-0">
-        <Canvas
-          camera={{ position: [0, 0, 6.5], fov: 55 }}
-          gl={{ antialias: true }}
-          dpr={[1, 1.8]}
-        >
-          <Suspense fallback={null}>
-            <Scene mouseRef={mouseRef} />
-          </Suspense>
-        </Canvas>
+        {canvasReady && (
+          <Canvas
+            camera={{ position: [0, 0, 6.5], fov: 55 }}
+            gl={{ antialias: true, powerPreference: "high-performance" }}
+            dpr={[1, 1.8]}
+          >
+            <Suspense fallback={null}>
+              <Scene mouseRef={mouseRef} />
+            </Suspense>
+          </Canvas>
+        )}
       </div>
 
       {/* ── CRT scan-line overlay ── */}

@@ -28,6 +28,7 @@ html.lenis body {
     -moz-osx-font-smoothing: grayscale;
     background: #020817;
     overflow-x: hidden;
+    position: relative; /* Required by Framer Motion's scroll offset calculation */
   }
 
   /* Hide native cursor on desktop — CustomCursor renders instead */
