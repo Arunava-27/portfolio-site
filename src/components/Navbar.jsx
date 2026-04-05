@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { lenisScrollTo } from "../store/lenisStore";
 
 const NAV_LINKS = [
   { label: "Home", href: "hero" },
@@ -48,8 +49,10 @@ export default function Navbar() {
   }, []);
 
   const scrollTo = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setMobileOpen(false);
+    // Wait for mobile menu close animation (250 ms) before scrolling
+    // so the layout shift doesn't throw off the target position.
+    setTimeout(() => lenisScrollTo(`#${id}`, { offset: 0 }), 300);
   };
 
   return (

@@ -447,7 +447,7 @@ export default function Hero() {
       </div>
 
       {/* ── Text content with spring parallax ── */}
-      <div id="hero-text-container" className="relative z-20 min-h-screen flex items-center">
+      <div id="hero-text-container" className="relative z-20 min-h-screen flex items-center pt-20 sm:pt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 w-full">
           <motion.div
             style={{ x: springX, y: springY }}
