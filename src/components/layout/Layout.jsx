@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import Navbar from "../Navbar";
 import Hero from "../../sections/Hero";
 import About from "../../sections/About";
@@ -45,6 +46,7 @@ export default function Layout() {
             <Contact />
           </main>
         </div>
+        <SpeedInsights />
       </div>
     </SmoothScroll>
   );
