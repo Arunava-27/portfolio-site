@@ -438,7 +438,7 @@ export default function Hero() {
 
       {/* ── Text content with spring parallax ── */}
       <div id="hero-text-container" className="relative z-20 min-h-screen flex items-center">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 w-full">
           <motion.div
             style={{ x: springX, y: springY }}
             variants={stagger}
@@ -467,7 +467,7 @@ export default function Hero() {
             </motion.p>
 
             {/* Name heading */}
-            <motion.h1 variants={fadeUp} className="text-5xl sm:text-6xl lg:text-[5.25rem] font-black leading-[1.05] mb-4">
+            <motion.h1 variants={fadeUp} className="text-4xl sm:text-5xl md:text-6xl lg:text-[5.25rem] font-black leading-[1.05] mb-4">
               <span className="text-white/90">Hi, I'm</span>
               <br />
               <span className="cyber-gradient-text">Arunava Kundu</span>
@@ -498,17 +498,17 @@ export default function Hero() {
             </motion.p>
 
             {/* CTA Buttons */}
-            <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-3 mb-10">
+            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 mb-10">
               {/* Primary — gradient fill */}
               <button
                 onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
-                className="group relative px-7 py-3 text-sm font-bold font-mono tracking-wider text-black rounded overflow-hidden transition-transform duration-200 hover:scale-105 active:scale-95"
+                className="group relative px-7 py-3 text-sm font-bold font-mono tracking-wider text-black rounded overflow-hidden transition-transform duration-200 hover:scale-105 active:scale-95 w-full sm:w-auto text-center"
                 style={{
                   background: "linear-gradient(135deg, #00f5ff, #bf00ff)",
                   boxShadow: "0 0 22px rgba(0,245,255,0.45), 0 0 44px rgba(191,0,255,0.2)",
                 }}
               >
-                <span className="relative z-10 flex items-center gap-2">
+                <span className="relative z-10 flex items-center justify-center gap-2">
                   VIEW_PROJECTS
                   <svg
                     className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200"
@@ -522,7 +522,7 @@ export default function Hero() {
               {/* Secondary — cyan border */}
               <button
                 onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-                className="px-7 py-3 text-sm font-bold font-mono tracking-wider text-cyan-400 rounded border transition-all duration-200 hover:scale-105 active:scale-95"
+                className="px-7 py-3 text-sm font-bold font-mono tracking-wider text-cyan-400 rounded border transition-all duration-200 hover:scale-105 active:scale-95 w-full sm:w-auto text-center"
                 style={{
                   borderColor: "rgba(0,245,255,0.38)",
                   boxShadow: "0 0 14px rgba(0,245,255,0.08), inset 0 0 14px rgba(0,245,255,0.04)",
@@ -545,7 +545,7 @@ export default function Hero() {
                 download="Arunava_Kundu_Resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-7 py-3 text-sm font-bold font-mono tracking-wider text-purple-400 rounded border transition-all duration-200 hover:scale-105 active:scale-95"
+                className="px-7 py-3 text-sm font-bold font-mono tracking-wider text-purple-400 rounded border transition-all duration-200 hover:scale-105 active:scale-95 w-full sm:w-auto text-center"
                 style={{
                   borderColor: "rgba(191,0,255,0.32)",
                   boxShadow: "0 0 14px rgba(191,0,255,0.08)",
@@ -564,7 +564,7 @@ export default function Hero() {
             </motion.div>
 
             {/* Social + Stats row */}
-            <motion.div variants={fadeUp} className="flex items-center gap-6 flex-wrap">
+            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 flex-wrap">
               {/* Social icons */}
               <div className="flex items-center gap-2">
                 {SOCIALS.map(({ label, href, icon }) => (

@@ -304,7 +304,7 @@ function TimelineEntry({ exp, index }) {
   return (
     <div
       ref={ref}
-      className="relative grid grid-cols-[1fr_40px] lg:grid-cols-[1fr_40px_1fr] gap-x-4 lg:gap-x-8 mb-10 lg:mb-14"
+      className="relative grid grid-cols-[40px_1fr] lg:grid-cols-[1fr_40px_1fr] gap-x-4 lg:gap-x-8 mb-10 lg:mb-14"
     >
       {/* ── Left slot (desktop only) ── */}
       <div className="hidden lg:block">
@@ -350,7 +350,7 @@ function TimelineLine() {
   return (
     <div
       ref={ref}
-      className="absolute left-[calc(50%-20px)] lg:left-1/2 top-0 bottom-0 w-px -translate-x-1/2 overflow-hidden"
+      className="absolute left-5 lg:left-1/2 top-0 bottom-0 w-px -translate-x-1/2 overflow-hidden"
     >
       {/* Base track */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-800/80 via-slate-700/40 to-slate-800/80" />

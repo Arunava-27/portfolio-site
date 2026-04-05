@@ -12,6 +12,7 @@ import PageReveal from "../effects/PageReveal";
 import ScrollAnimations from "../effects/ScrollAnimations";
 import ParticlesNetwork from "../effects/ParticlesNetwork";
 import CustomCursor from "../effects/CustomCursor";
+import ErrorBoundary from "../ErrorBoundary";
 
 export default function Layout() {
   // Always dark — apply class once on mount
@@ -22,15 +23,21 @@ export default function Layout() {
   return (
     <SmoothScroll>
       <div className="dark">
-        <PageReveal />
+        <ErrorBoundary>
+          <PageReveal />
+        </ErrorBoundary>
         <ScrollAnimations />
         <MouseGlow />
-        <ParticlesNetwork />
+        <ErrorBoundary>
+          <ParticlesNetwork />
+        </ErrorBoundary>
         <CustomCursor />
         <div className="relative z-10 min-h-screen text-slate-100">
           <Navbar />
           <main>
-            <Hero />
+            <ErrorBoundary>
+              <Hero />
+            </ErrorBoundary>
             <About />
             <Skills />
             <Projects />

@@ -499,10 +499,10 @@ export default function Projects() {
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="mt-14 pt-10 border-t flex flex-wrap items-center justify-between gap-6"
+          className="mt-14 pt-10 border-t flex flex-col sm:flex-row flex-wrap items-center justify-between gap-6"
           style={{ borderColor: "rgba(255,255,255,0.06)" }}
         >
-          <div className="flex flex-wrap gap-8">
+          <div className="flex flex-wrap justify-center sm:justify-start gap-6 sm:gap-8">
             {[
               { label: "Total Projects", value: PROJECTS.length },
               { label: "Web Apps",        value: PROJECTS.filter(p => p.category === "Web").length },

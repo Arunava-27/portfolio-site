@@ -27,6 +27,7 @@ html.lenis body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background: #020817;
+    overflow-x: hidden;
   }
 
   /* Hide native cursor on desktop — CustomCursor renders instead */

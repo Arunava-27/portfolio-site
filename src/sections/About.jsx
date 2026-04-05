@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import meImage from "../assets/me.png";
+import meImage from "../assets/me.webp";
 
 const STATS = [
   { value: "2+", label: "Years Experience" },
@@ -46,7 +46,7 @@ export default function About() {
               <div className="absolute -inset-[2px] rounded-2xl bg-gradient-to-br from-violet-500 via-cyan-400 to-violet-600 opacity-40" />
 
               {/* Photo frame */}
-              <div className="relative w-64 h-80 rounded-2xl overflow-hidden shadow-2xl">
+              <div className="relative w-56 sm:w-64 h-72 sm:h-80 rounded-2xl overflow-hidden shadow-2xl">
                 <img
                   src={meImage}
                   alt="Arunava Kundu"
@@ -131,16 +131,16 @@ export default function About() {
               ))}
             </div>
 
-            <div className="mt-8 flex gap-4">
+            <div className="mt-8 flex flex-col sm:flex-row gap-4">
               <button
                 onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-                className="px-6 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-cyan-600 hover:opacity-90 hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg shadow-violet-500/25"
+                className="px-6 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-cyan-600 hover:opacity-90 hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg shadow-violet-500/25 w-full sm:w-auto text-center"
               >
                 Let's Talk
               </button>
               <button
                 onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
-                className="px-6 py-3 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-violet-500 dark:hover:border-violet-500 transition-all duration-200"
+                className="px-6 py-3 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-violet-500 dark:hover:border-violet-500 transition-all duration-200 w-full sm:w-auto text-center"
               >
                 See Projects
               </button>

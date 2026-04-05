@@ -96,11 +96,11 @@ export default function Contact() {
                 <div>
                   <div className="text-xs text-slate-500 dark:text-slate-500 mb-0.5">{label}</div>
                   {href ? (
-                    <a href={href} className="text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+                    <a href={href} className="text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-violet-600 dark:hover:text-violet-400 transition-colors break-all">
                       {value}
                     </a>
                   ) : (
-                    <div className="text-sm font-medium text-slate-800 dark:text-slate-200">{value}</div>
+                    <div className="text-sm font-medium text-slate-800 dark:text-slate-200 break-words">{value}</div>
                   )}
                 </div>
               </div>
