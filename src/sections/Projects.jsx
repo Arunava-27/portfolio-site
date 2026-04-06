@@ -15,7 +15,7 @@ const PROJECTS = [
       "Full-stack hospital EMR system built for real clinical deployment. Handles patient records, doctor scheduling, prescription management, and role-based workflows for staff, doctors, and admins.",
     tech: ["React.js", "Node.js", "Express", "MongoDB", "JWT Auth", "REST APIs"],
     github: "https://github.com/Arunava-27/iema-emr",
-    live: "#",
+    live: null,
     accent: { from: "#8b5cf6", to: "#06b6d4" },
     iconPath: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
   },
@@ -29,7 +29,7 @@ const PROJECTS = [
       "Real-time IoT asset health monitoring dashboard built for SAIL DSP. Aggregates live sensor data, visualises equipment health trends, and triggers maintenance alerts before failures occur.",
     tech: ["React.js", "Node.js", "MongoDB", "Socket.io", "Chart.js", "MQTT"],
     github: "https://github.com/Arunava-27/iot-asset-monitor",
-    live: "#",
+    live: null,
     accent: { from: "#f59e0b", to: "#ef4444" },
     iconPath: "M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18",
   },
@@ -43,7 +43,7 @@ const PROJECTS = [
       "React Native mobile learning platform developed for IEM America Corporation. Features video lessons, interactive quizzes, progress tracking, and automated certificate generation on completion.",
     tech: ["React Native", "Node.js", "MongoDB", "Express", "JWT", "AWS S3"],
     github: "https://github.com/Arunava-27/robotrix",
-    live: "#",
+    live: "https://play.google.com/store/apps/details?id=com.souvik720i.robotrix&pcampaignid=web_share",
     accent: { from: "#10b981", to: "#06b6d4" },
     iconPath: "M15 10l4.553-2.069A1 1 0 0121 8.82v6.36a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z",
   },
@@ -59,7 +59,7 @@ const PROJECTS = [
       "Comprehensive Python-based VA/PT automation framework. Performs recon, port scanning, CVE correlation, and web vulnerability probing — then generates structured HTML/JSON reports.",
     tech: ["Python", "FastAPI", "Nmap", "Requests", "SQLite", "Jinja2"],
     github: "https://github.com/Arunava-27/vapt-toolkit",
-    live: "#",
+    live: null,
     accent: { from: "#00f5ff", to: "#00ff88" },
     iconPath: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
   },
@@ -73,7 +73,7 @@ const PROJECTS = [
       "Full-stack cybersecurity monitoring dashboard. Aggregates threat feeds, visualises network traffic anomalies, tracks CVEs, and provides live alerts via WebSocket for active incidents.",
     tech: ["React.js", "Node.js", "Socket.io", "MongoDB", "Chart.js", "Python"],
     github: "https://github.com/Arunava-27/cybershield",
-    live: "#",
+    live: null,
     accent: { from: "#ff006e", to: "#8b5cf6" },
     iconPath: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z",
   },
@@ -87,7 +87,7 @@ const PROJECTS = [
       "Passive and active network recon tool built in Python. Automates subdomain enumeration, banner grabbing, OS fingerprinting, and outputs structured attack-surface maps for pen testers.",
     tech: ["Python", "Scapy", "Shodan API", "Click", "Rich", "SQLite"],
     github: "https://github.com/Arunava-27/netrecon",
-    live: "#",
+    live: null,
     accent: { from: "#00ff88", to: "#00f5ff" },
     iconPath: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9",
   },
@@ -103,7 +103,7 @@ const PROJECTS = [
       "Real-time chat application with an embedded AI assistant powered by the Gemini API. Supports room-based chats, persistent history, code block rendering, and smart conversation summaries.",
     tech: ["React.js", "Node.js", "Socket.io", "MongoDB", "Gemini API", "Express"],
     github: "https://github.com/Arunava-27/intellichat",
-    live: "#",
+    live: null,
     accent: { from: "#8b5cf6", to: "#ec4899" },
     iconPath: "M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z",
   },
@@ -117,7 +117,7 @@ const PROJECTS = [
       "ML-assisted threat intelligence platform that ingests CVE feeds, breach reports, and dark-web alerts — then clusters and prioritises threats using NLP-based similarity scoring.",
     tech: ["Python", "FastAPI", "scikit-learn", "NLP", "React.js", "MongoDB"],
     github: "https://github.com/Arunava-27/threatmapper",
-    live: "#",
+    live: null,
     accent: { from: "#f59e0b", to: "#ef4444" },
     iconPath: "M13 10V3L4 14h7v7l9-11h-7z",
   },
@@ -131,7 +131,7 @@ const PROJECTS = [
       "AES-256 encrypted password manager with zero-knowledge architecture — the server never sees plaintext credentials. Includes AI-powered breach detection and password strength analysis.",
     tech: ["React.js", "Node.js", "CryptoJS", "MongoDB", "JWT", "Gemini API"],
     github: "https://github.com/Arunava-27/securevault",
-    live: "#",
+    live: null,
     accent: { from: "#06b6d4", to: "#10b981" },
     iconPath: "M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z",
   },
@@ -309,28 +309,49 @@ function ProjectCard({ project, index }) {
 
         {/* ── Links ── */}
         <div className="flex items-center gap-3">
-          <a
-            href={live}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-bold font-mono tracking-wider rounded-lg transition-all duration-200 hover:scale-105"
-            style={{
-              background: `linear-gradient(135deg, ${accent.from}22, ${accent.to}22)`,
-              color: accent.from,
-              border: `1px solid ${accent.from}44`,
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = `linear-gradient(135deg, ${accent.from}40, ${accent.to}40)`;
-              e.currentTarget.style.borderColor = `${accent.from}99`;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = `linear-gradient(135deg, ${accent.from}22, ${accent.to}22)`;
-              e.currentTarget.style.borderColor = `${accent.from}44`;
-            }}
-          >
-            <ExternalIcon />
-            LIVE DEMO
-          </a>
+          {live ? (
+            <a
+              href={live}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-bold font-mono tracking-wider rounded-lg transition-all duration-200 hover:scale-105"
+              style={{
+                background: `linear-gradient(135deg, ${accent.from}22, ${accent.to}22)`,
+                color: accent.from,
+                border: `1px solid ${accent.from}44`,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = `linear-gradient(135deg, ${accent.from}40, ${accent.to}40)`;
+                e.currentTarget.style.borderColor = `${accent.from}99`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = `linear-gradient(135deg, ${accent.from}22, ${accent.to}22)`;
+                e.currentTarget.style.borderColor = `${accent.from}44`;
+              }}
+            >
+              <ExternalIcon />
+              LIVE DEMO
+            </a>
+          ) : (
+            <span
+              className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-bold font-mono tracking-wider rounded-lg cursor-not-allowed select-none"
+              title="No live demo available"
+              style={{
+                background: "rgba(255,255,255,0.02)",
+                color: "#475569",
+                border: "1px solid rgba(255,255,255,0.06)",
+              }}
+            >
+              <svg width={13} height={13} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              PRIVATE / WIP
+            </span>
+          )}
           <a
             href={github}
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-bold font-mono tracking-wider rounded-lg transition-all duration-200 hover:scale-105"
             style={{
               background: "rgba(255,255,255,0.04)",
