@@ -48,6 +48,33 @@ function sanitize(str) {
 // --- Field limits ------------------------------------------------------------
 const LIMITS = { name: 100, email: 254, subject: 150, message: 2000 };
 
+function toOrigin(urlLike) {
+  if (!urlLike) return "";
+  try {
+    return new URL(urlLike).origin;
+  } catch {
+    return "";
+  }
+}
+
+function getAllowedOrigins() {
+  const origins = new Set([
+    "https://arunavakundu.com",
+    "https://www.arunavakundu.com",
+  ]);
+
+  if (process.env.VERCEL_URL) {
+    origins.add(`https://${process.env.VERCEL_URL}`);
+  }
+
+  for (const key of ["SITE_URL", "PUBLIC_SITE_URL", "NEXT_PUBLIC_SITE_URL"]) {
+    const origin = toOrigin(process.env[key]);
+    if (origin) origins.add(origin);
+  }
+
+  return origins;
+}
+
 // --- Handler -----------------------------------------------------------------
 export default async function handler(req, res) {
   // -- Method --
@@ -64,10 +91,31 @@ export default async function handler(req, res) {
 
   // -- Origin / Referer check (production only) --
   if (process.env.NODE_ENV === "production") {
-    const origin  = req.headers["origin"]  ?? "";
-    const referer = req.headers["referer"] ?? "";
-    const allowed = "https://arunavakundu.com";
-    if (!origin.startsWith(allowed) && !referer.startsWith(allowed)) {
+    const allowedOrigins = getAllowedOrigins();
+    const allowedHosts = new Set(
+      [...allowedOrigins]
+        .map((origin) => {
+          try {
+            return new URL(origin).host;
+          } catch {
+            return "";
+          }
+        })
+        .filter(Boolean)
+    );
+
+    const origin = toOrigin(req.headers["origin"] ?? "");
+    const refererOrigin = toOrigin(req.headers["referer"] ?? "");
+    const originOk = (origin && allowedOrigins.has(origin)) || (refererOrigin && allowedOrigins.has(refererOrigin));
+
+    // Some privacy modes omit Origin/Referer for same-origin form posts.
+    const secFetchSite = String(req.headers["sec-fetch-site"] ?? "").toLowerCase();
+    const forwardedHost = String(req.headers["x-forwarded-host"] ?? req.headers.host ?? "").toLowerCase();
+    const hostOnly = forwardedHost.split(":")[0];
+    const hostOk = allowedHosts.has(hostOnly);
+    const likelySameOrigin = !secFetchSite || secFetchSite === "same-origin" || secFetchSite === "none";
+
+    if (!originOk && !(hostOk && likelySameOrigin)) {
       return res.status(403).json({ error: "Forbidden." });
     }
   }
