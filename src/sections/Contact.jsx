@@ -25,14 +25,42 @@ const SOCIAL_LINKS = [
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [status, setStatus] = useState("idle"); // idle | sending | sent | error
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus("sending");
-    await new Promise((r) => setTimeout(r, 1500));
-    setStatus("sent");
+    setErrorMsg("");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      let data = null;
+      const contentType = res.headers.get("content-type") || "";
+      if (contentType.includes("application/json")) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+        data = { error: text?.trim() || "Unexpected response from server." };
+      }
+
+      if (!res.ok) {
+        const fallback = res.status === 404
+          ? "Contact API route not found in local dev. Use `vercel dev` or deploy to Vercel."
+          : "Something went wrong.";
+        throw new Error(data?.error || fallback);
+      }
+
+      setStatus("sent");
+    } catch (err) {
+      setErrorMsg(err.message || "Failed to send. Please try again.");
+      setStatus("error");
+    }
   };
 
   return (
@@ -149,7 +177,7 @@ export default function Contact() {
                     Thanks for reaching out. I'll get back to you within 24 hours.
                   </p>
                   <button
-                    onClick={() => { setStatus("idle"); setForm({ name: "", email: "", subject: "", message: "" }); }}
+                    onClick={() => { setStatus("idle"); setErrorMsg(""); setForm({ name: "", email: "", subject: "", message: "" }); }}
                     className="px-5 py-2.5 text-sm font-semibold rounded-xl text-violet-600 dark:text-violet-400 border border-violet-500/30 hover:bg-violet-500/10 transition-colors duration-200"
                   >
                     Send Another
@@ -207,6 +235,18 @@ export default function Contact() {
                       className="w-full px-4 py-3 text-sm rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-violet-500/40 focus:border-violet-500 transition-colors duration-200 resize-none"
                     />
                   </div>
+                  {status === "error" && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-500 dark:text-red-400 text-sm"
+                    >
+                      <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {errorMsg}
+                    </motion.div>
+                  )}
                   <button
                     type="submit"
                     disabled={status === "sending"}
