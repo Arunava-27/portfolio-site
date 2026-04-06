@@ -4,6 +4,7 @@ import { Stars } from "@react-three/drei";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import * as THREE from "three";
 import { onLoaderDone } from "../store/loaderStore";
+import { yearsExpLabel, appCountLabel } from "../utils/metrics";
 
 // ─── 3D: Wireframe Icosahedron + orbiting rings ────────────────────────────
 
@@ -343,9 +344,9 @@ const SOCIALS = [
 ];
 
 const STATS = [
-  { value: "100+", label: "REPOS" },
-  { value: "2+",  label: "YRS_EXP" },
-  { value: "3",   label: "PROD_APPS" },
+  { value: "100+",        label: "REPOS" },
+  { value: yearsExpLabel, label: "YRS_EXP" },
+  { value: appCountLabel, label: "PROD_APPS" },
 ];
 
 const stagger = {

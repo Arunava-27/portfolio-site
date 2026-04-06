@@ -6,6 +6,7 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
+import { yearsExpLabel, userCountLabel } from "../utils/metrics";
 
 // ─── Data ──────────────────────────────────────────────────────────────────
 
@@ -476,10 +477,10 @@ export default function Experience() {
           className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-4"
         >
           {[
-            { value: "2+",    label: "Years Experience",   color: "#8b5cf6" },
-            { value: "1",     label: "Companies",          color: "#06b6d4" },
-            { value: "100+",  label: "Users Reached",      color: "#10b981" },
-            { value: "100%",  label: "On-time Delivery",   color: "#f59e0b" },
+            { value: yearsExpLabel,  label: "Years Experience",   color: "#8b5cf6" },
+            { value: "1",            label: "Companies",          color: "#06b6d4" },
+            { value: userCountLabel, label: "Users Reached",      color: "#10b981" },
+            { value: "100%",         label: "On-time Delivery",   color: "#f59e0b" },
           ].map(({ value, label, color }) => (
             <div
               key={label}

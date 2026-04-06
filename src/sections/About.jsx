@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
 import meImage from "../assets/me.webp";
+import { yearsExpLabel, appCountLabel } from "../utils/metrics";
 
 const STATS = [
-  { value: "2+", label: "Years Experience" },
-  { value: "100+", label: "GitHub Repos" },
-  { value: "3", label: "Production Apps" },
-  { value: "5+", label: "Certifications" },
+  { value: yearsExpLabel, label: "Years Experience" },
+  { value: "100+",        label: "GitHub Repos" },
+  { value: appCountLabel, label: "Production Apps" },
+  { value: "5+",          label: "Certifications" },
 ];
 
 const fadeInUp = {
