@@ -92,31 +92,34 @@ export default async function handler(req, res) {
   // -- Origin / Referer check (production only) --
   if (process.env.NODE_ENV === "production") {
     const allowedOrigins = getAllowedOrigins();
-    const allowedHosts = new Set(
-      [...allowedOrigins]
-        .map((origin) => {
-          try {
-            return new URL(origin).host;
-          } catch {
-            return "";
-          }
-        })
-        .filter(Boolean)
-    );
 
-    const origin = toOrigin(req.headers["origin"] ?? "");
+    const origin        = toOrigin(req.headers["origin"]  ?? "");
     const refererOrigin = toOrigin(req.headers["referer"] ?? "");
-    const originOk = (origin && allowedOrigins.has(origin)) || (refererOrigin && allowedOrigins.has(refererOrigin));
 
-    // Some privacy modes omit Origin/Referer for same-origin form posts.
-    const secFetchSite = String(req.headers["sec-fetch-site"] ?? "").toLowerCase();
-    const forwardedHost = String(req.headers["x-forwarded-host"] ?? req.headers.host ?? "").toLowerCase();
-    const hostOnly = forwardedHost.split(":")[0];
-    const hostOk = allowedHosts.has(hostOnly);
-    const likelySameOrigin = !secFetchSite || secFetchSite === "same-origin" || secFetchSite === "none";
-
-    if (!originOk && !(hostOk && likelySameOrigin)) {
+    // 1. If Origin is explicitly provided it MUST be allowed — no fallback.
+    if (origin && !allowedOrigins.has(origin)) {
       return res.status(403).json({ error: "Forbidden." });
+    }
+
+    // 2. If Referer is provided (and no Origin), it MUST be allowed.
+    if (!origin && refererOrigin && !allowedOrigins.has(refererOrigin)) {
+      return res.status(403).json({ error: "Forbidden." });
+    }
+
+    // 3. Neither Origin nor Referer (privacy mode / direct curl).
+    //    Fall back to host + Sec-Fetch-Site check.
+    if (!origin && !refererOrigin) {
+      const secFetchSite  = String(req.headers["sec-fetch-site"] ?? "").toLowerCase();
+      const forwardedHost = String(req.headers["x-forwarded-host"] ?? req.headers.host ?? "").toLowerCase();
+      const hostOnly      = forwardedHost.split(":")[0];
+      const allowedHosts  = new Set(
+        [...allowedOrigins].map((o) => { try { return new URL(o).host; } catch { return ""; } }).filter(Boolean)
+      );
+      const hostOk           = allowedHosts.has(hostOnly);
+      const likelySameOrigin = !secFetchSite || secFetchSite === "same-origin" || secFetchSite === "none";
+      if (!hostOk || !likelySameOrigin) {
+        return res.status(403).json({ error: "Forbidden." });
+      }
     }
   }
 
@@ -141,16 +144,16 @@ export default async function handler(req, res) {
     }
   }
 
+  const body = req.body ?? {};
+
+  // -- Honeypot: bots fill this, humans leave it blank (checked before Resend) --
+  if (body.hp_field) {
+    return res.status(200).json({ ok: true });
+  }
+
   // -- Resend configured? --
   if (!resend) {
     return res.status(500).json({ error: "Email service is not configured." });
-  }
-
-  const body = req.body ?? {};
-
-  // -- Honeypot: bots fill this, humans leave it blank --
-  if (body.hp_field) {
-    return res.status(200).json({ ok: true });
   }
 
   const { name, email, subject, message } = body;
