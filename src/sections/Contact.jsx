@@ -23,7 +23,7 @@ const SOCIAL_LINKS = [
 ];
 
 export default function Contact() {
-  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "", hp_field: "" });
   const [status, setStatus] = useState("idle"); // idle | sending | sent | error
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -185,6 +185,17 @@ export default function Contact() {
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Honeypot — hidden from real users, traps bots */}
+                  <input
+                    type="text"
+                    name="hp_field"
+                    value={form.hp_field}
+                    onChange={handleChange}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    style={{ display: "none" }}
+                  />
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Name</label>
